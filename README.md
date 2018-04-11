@@ -1,4 +1,4 @@
-# spring4-mvc-maven-xml-hello-world
+# spring4-mvc-hello-world
 
 Spring Mvc 4 Hello world example, with jsp view and rest controller and autowired service
 
