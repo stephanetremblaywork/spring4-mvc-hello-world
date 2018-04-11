@@ -21,7 +21,7 @@ mvn clean install
 
 ## Authors
 
-* **Juan Enrique Alcázar Solomando** - *Initial work* - [PurpleBooth](https://github.com/jealcazars)
+* **Juan Enrique Alcázar Solomando** - *Initial work* - [jealcazars](https://github.com/jealcazars)
 
 ## License
 
