@@ -4,7 +4,7 @@
 
 	<appender name="FILE"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>spring4-mvc-hello-world.log</file>
+		<file>hello-world.log</file>
 		<encoder>
 			<pattern>[%d] %-5level %logger.%M\(%line\) - %msg%n</pattern>
 		</encoder>
