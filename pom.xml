@@ -18,7 +18,7 @@
 		<mockito.version>4.5.1</mockito.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<docker.image.name>helloworld</docker.image.name>
+		<docker.repo>stephanetremblay/spring4-mvc-hello-world</docker.repo>
 	</properties>
 
 	<distributionManagement>
@@ -170,14 +170,14 @@
 							<workingDirectory>${project.basedir}</workingDirectory>
 							<arguments>
 								<argument>rmi</argument>
-								<argument>${docker.image.name}:${project.version}</argument>
+								<argument>${docker.repo}:${project.version}</argument>
 							</arguments>
 							<successCodes>
 								<successCode>0</successCode>
 								<successCode>1</successCode>
 							</successCodes>
 						</configuration>
-					</execution> <!--       Create new docker image using Dockerfile which must be present in current working directory.      Tag the image using maven project version information.    -->
+					</execution>
 					<execution>
 						<id>docker-build</id>
 						<phase>install</phase>
@@ -190,27 +190,8 @@
 							<arguments>
 								<argument>build</argument>
 								<argument>-t</argument>
-								<argument>${docker.image.name}:${project.version}</argument>
+								<argument>${docker.repo}:${project.version}</argument>
 								<argument>.</argument>
-							</arguments>
-						</configuration>
-					</execution> <!-- Login and Push the image to a docker repo. -->
-					<execution>
-						<id>docker-login</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>docker</executable>
-							<workingDirectory>${project.basedir}</workingDirectory>
-							<arguments>
-								<argument>login</argument>
-								<argument>-u</argument>
-								<argument>${docker.user}</argument>
-								<argument>-p</argument>
-								<argument>${docker.password}</argument>
-								<argument>${docker.url}</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -225,7 +206,7 @@
 							<workingDirectory>${project.basedir}</workingDirectory>
 							<arguments>
 								<argument>push</argument>
-								<argument>${docker.image.name}:${project.version}</argument>
+								<argument>${docker.repo}:${project.version}</argument>
 							</arguments>
 						</configuration>
 					</execution>
