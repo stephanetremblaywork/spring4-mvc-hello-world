@@ -9,17 +9,21 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn compile'
+		withMaven(maven: 'maven 3.8.5', mavenSettingsConfig: 'Maven_Settings_XML'){
+		    sh 'mvn compile'
+		}
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn test'
+		withMaven(maven: 'maven 3.8.5', mavenSettingsConfig: 'Maven_Settings_XML'){
+		    sh 'mvn test'
             }
         }
         stage('Deploy') {
             steps {
-                sh 'mvn deploy'
+		withMaven(maven: 'maven 3.8.5', mavenSettingsConfig: 'Maven_Settings_XML'){
+		    sh 'mvn deploy'
             }
         }
     }
