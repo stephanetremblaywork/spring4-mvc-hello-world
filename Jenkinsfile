@@ -9,23 +9,26 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-		withMaven(maven: 'maven 3.8.5', mavenSettingsConfig: 'Maven_Settings_XML') {
-		    sh 'mvn compile'
-		}
+				configFileProvider(
+				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
+						sh 'mvn -s $MAVEN_SETTINGS compile'
+				}
             }
         }
         stage('Test') {
             steps {
-		withMaven(maven: 'maven 3.8.5', mavenSettingsConfig: 'Maven_Settings_XML') {
-		    sh 'mvn test'
-		}
+				configFileProvider(
+				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
+						sh 'mvn -s $MAVEN_SETTINGS test'
+				}
             }
         }
         stage('Deploy') {
             steps {
-		withMaven(maven: 'maven 3.8.5', mavenSettingsConfig: 'Maven_Settings_XML') {
-		    sh 'mvn deploy'
-		}
+				configFileProvider(
+				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
+						sh 'mvn -s $MAVEN_SETTINGS deploy'
+				}
             }
         }
     }
