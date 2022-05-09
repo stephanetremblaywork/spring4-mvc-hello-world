@@ -11,7 +11,7 @@ pipeline {
             steps {
 				configFileProvider(
 				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
-						sh 'mvn -s $MAVEN_SETTINGS compile'
+						sh 'mvn -s "$MAVEN_SETTINGS" compile'
 				}
             }
         }
@@ -19,7 +19,7 @@ pipeline {
             steps {
 				configFileProvider(
 				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
-						sh 'mvn -s $MAVEN_SETTINGS test'
+						sh 'mvn -s "$MAVEN_SETTINGS" test'
 				}
             }
         }
@@ -27,7 +27,7 @@ pipeline {
             steps {
 				configFileProvider(
 				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
-						sh 'mvn -s $MAVEN_SETTINGS deploy'
+						sh 'mvn -s "$MAVEN_SETTINGS" deploy'
 				}
             }
         }
