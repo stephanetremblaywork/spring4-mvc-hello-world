@@ -2,35 +2,43 @@ pipeline {
     agent any
 
     tools {
-        maven 'maven 3.8.5'
+        maven 'Maven 3.8.5'
         jdk 'jdk8'
     }
 
     stages {
         stage('Build') {
-            steps {
-				configFileProvider(
-				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
-						sh 'mvn -s "$MAVEN_SETTINGS" compile'
+			steps {
+				withMaven(
+					maven: 'Maven 3.8.5',
+					mavenLocalRepo: '.repository',
+					mavenSettingsConfig: 'Maven_Settings_XML')
+				{
+						sh 'mvn compile'
 				}
-            }
+			}
         }
         stage('Test') {
-            steps {
-				configFileProvider(
-				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
-						sh 'mvn -s "$MAVEN_SETTINGS" test'
+			steps {
+				withMaven(
+					maven: 'Maven 3.8.5',
+					mavenLocalRepo: '.repository',
+					mavenSettingsConfig: 'Maven_Settings_XML')
+				{
+						sh 'mvn test'
 				}
-            }
+			}
         }
         stage('Deploy') {
-            steps {
-				configFileProvider(
-				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
-					sh 'cat "$MAVEN_SETTINGS"'
-					sh 'mvn -s "$MAVEN_SETTINGS" deploy'
+			steps {
+				withMaven(
+					maven: 'Maven 3.8.5',
+					mavenLocalRepo: '.repository',
+					mavenSettingsConfig: 'Maven_Settings_XML')
+				{
+					sh 'mvn deploy'
 				}
-            }
-        }
+			}
+		}
     }
 }
