@@ -1,5 +1,6 @@
 pipeline {
 	environment {
+		registry = "stephanetremblay/spring4-mvc-hello-world"
 		docker_image_tag = 'stephanetremblay/spring4-mvc-hello-world'
 		docker_image = ''
 	}
@@ -37,8 +38,8 @@ pipeline {
 		stage('Docker Build') {
 			steps {
 				script {
-					docker.withRegistry('https://hub.docker.com/repository/docker/stephanetremblay/spring4-mvc-hello-world', 'DockerHub') {
-						docker_image = docker.build(docker_image_tage)
+					docker.withRegistry('', 'DockerHub') {
+						docker_image = docker.build(docker_image_tag)
 					}
 				}
 			}
@@ -53,7 +54,7 @@ pipeline {
 					sh 'mvn deploy'
 				}
 				script {
-					docker.withRegistry('https://hub.docker.com/repository/docker/stephanetremblay/spring4-mvc-hello-world', 'DockerHub') {
+					docker.withRegistry('', 'DockerHub') {
 						docker_image.push()
 					}
 				}
