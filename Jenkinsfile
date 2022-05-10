@@ -8,37 +8,32 @@ pipeline {
 
     stages {
         stage('Build') {
-			steps {
-				withMaven(
-					maven: 'Maven 3.8.5',
-					mavenLocalRepo: '.repository',
-					mavenSettingsConfig: 'Maven_Settings_XML')
-				{
-						sh 'mvn compile'
+            steps {
+				configFileProvider(
+				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
+						sh 'mvn -s "$MAVEN_SETTINGS" compile'
 				}
-			}
+            }
         }
         stage('Test') {
-			steps {
-				withMaven(
-					maven: 'Maven 3.8.5',
-					mavenLocalRepo: '.repository',
-					mavenSettingsConfig: 'Maven_Settings_XML')
-				{
-						sh 'mvn test'
+            steps {
+				configFileProvider(
+				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
+						sh 'mvn -s "$MAVEN_SETTINGS" test'
 				}
-			}
+            }
         }
         stage('Deploy') {
-			steps {
-				withMaven(
-					maven: 'Maven 3.8.5',
-					mavenLocalRepo: '.repository',
-					mavenSettingsConfig: 'Maven_Settings_XML')
-				{
-					sh 'mvn deploy'
+            steps {
+				configFileProvider(
+				[
+					configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS'),
+					configFile(fileId: 'Docker_Config_JSON', targetLocation: '~/.docker/config.json')
+				]) {
+					sh 'cat "$MAVEN_SETTINGS"'
+					sh 'mvn -s "$MAVEN_SETTINGS" deploy'
 				}
-			}
-		}
+            }
+        }
     }
 }
