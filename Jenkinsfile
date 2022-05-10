@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+	environment {
+		docker_image_tag = 'stephanetremblay/spring4-mvc-hello-world'
+		docker_image = ''
+	}
+
+	agent any
 
     tools {
         maven 'Maven 3.8.5'
@@ -8,32 +13,51 @@ pipeline {
 
     stages {
         stage('Build') {
-            steps {
-				configFileProvider(
-				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
-						sh 'mvn -s "$MAVEN_SETTINGS" compile'
+			steps {
+				withMaven(
+					maven: 'Maven 3.8.5',
+					mavenLocalRepo: '.repository',
+					mavenSettingsConfig: 'Maven_Settings_XML')
+				{
+						sh 'mvn compile'
 				}
-            }
+			}
         }
         stage('Test') {
-            steps {
-				configFileProvider(
-				[configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS')]) {
-						sh 'mvn -s "$MAVEN_SETTINGS" test'
+			steps {
+				withMaven(
+					maven: 'Maven 3.8.5',
+					mavenLocalRepo: '.repository',
+					mavenSettingsConfig: 'Maven_Settings_XML')
+				{
+						sh 'mvn test'
 				}
-            }
+			}
         }
+		stage('Docker Build') {
+			steps {
+				script {
+					docker.withRegistry('https://hub.docker.com/repository/docker/stephanetremblay/spring4-mvc-hello-world', 'DockerHub') {
+						docker_image = docker.build(docker_image_tage)
+					}
+				}
+			}
+		}
         stage('Deploy') {
-            steps {
-				configFileProvider(
-				[
-					configFile(fileId: 'Maven_Settings_XML', variable: 'MAVEN_SETTINGS'),
-					configFile(fileId: 'Docker_Config_JSON', targetLocation: '~/.docker/config.json')
-				]) {
-					sh 'cat "$MAVEN_SETTINGS"'
-					sh 'mvn -s "$MAVEN_SETTINGS" deploy'
+			steps {
+				withMaven(
+					maven: 'Maven 3.8.5',
+					mavenLocalRepo: '.repository',
+					mavenSettingsConfig: 'Maven_Settings_XML')
+				{
+					sh 'mvn deploy'
 				}
-            }
-        }
+				script {
+					docker.withRegistry('https://hub.docker.com/repository/docker/stephanetremblay/spring4-mvc-hello-world', 'DockerHub') {
+						docker_image.push()
+					}
+				}
+			}
+		}
     }
 }
